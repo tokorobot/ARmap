@@ -1,0 +1,562 @@
+/* ============================================================
+   校内ナビ 共通スタイル（モバイルファースト）
+   ============================================================ */
+
+:root {
+  --accent: #0d7a72;
+  --accent-dark: #0a5f59;
+  --bg: #f2f5f5;
+  --text: #22312f;
+  --muted: #6b7a78;
+  --card: #ffffff;
+  --border: #dbe4e3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Noto Sans JP", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- ヘッダー ---------- */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: #fff;
+}
+
+.app-title h1 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.app-title span {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.back-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.back-spacer {
+  width: 36px;
+}
+
+.app-main {
+  flex: 1;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- 汎用 ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:active {
+  background: var(--accent-dark);
+}
+
+.btn-ghost {
+  background: #e8efee;
+  color: var(--accent-dark);
+}
+
+.btn-lg {
+  padding: 16px;
+  font-size: 17px;
+}
+
+.btn-sm {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.note {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.section-title {
+  font-size: 15px;
+  margin: 8px 0 0;
+}
+
+.current-chip {
+  margin: 0;
+  font-size: 14px;
+}
+
+.home-lead {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- 目的地リスト ---------- */
+.dest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dest-group-title {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.dest-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 4px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.dest-btn:active {
+  background: #e2efee;
+  border-color: var(--accent);
+}
+
+.home-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  padding: 16px 0 8px;
+  font-size: 12px;
+}
+
+.home-footer a,
+.link-btn {
+  color: var(--muted);
+  background: none;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ---------- スキャン ---------- */
+.scan {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scan-hint {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+.scan-frame {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background: #000;
+}
+
+.scan-frame video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scan-corners {
+  position: absolute;
+  inset: 15%;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  border-radius: 14px;
+  mask: linear-gradient(#000 0 0) padding-box;
+  pointer-events: none;
+}
+
+.scan-error {
+  color: #a13333;
+}
+
+/* ---------- 案内 ---------- */
+.guide {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.guide-dest {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.step-card {
+  border-left: 5px solid var(--accent);
+}
+
+.step-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.step-no {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.step-icon {
+  font-size: 22px;
+}
+
+.step-text {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.step-detail {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.guide-nav {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 10px;
+}
+
+.rescan {
+  align-self: center;
+}
+
+.floor-map {
+  width: 100%;
+  background: #fafcfc;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+/* ---------- コンパス ---------- */
+.compass {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.compass-svg {
+  width: 130px;
+  height: 130px;
+}
+
+.compass-note {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- ARカメラモード ---------- */
+.ar-root {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #000;
+  overflow: hidden;
+}
+
+.ar-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ar-close {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: 12px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.ar-compass-btn {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: 12px;
+  z-index: 3;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 14px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* QR貼り付きラベル */
+.ar-pin {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -115%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 240px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border-left: 4px solid var(--accent);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+  transition: left 0.12s linear, top 0.12s linear;
+  pointer-events: none;
+}
+
+.ar-pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.92);
+  border-bottom: none;
+}
+
+.ar-pin strong {
+  font-size: 16px;
+}
+
+.ar-pin span {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* 進行方向の矢印 */
+.ar-arrow {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 34%;
+  transform: translateX(-50%);
+  width: 130px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.ar-arrow svg {
+  width: 130px;
+  height: 130px;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+}
+
+.ar-arrow-note {
+  margin: 0;
+  font-size: 11px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* 画面下部のカード */
+.ar-bottom {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 12px max(12px, env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: center;
+}
+
+.ar-card {
+  width: 100%;
+  max-width: 456px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ar-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ar-map-btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  cursor: pointer;
+}
+
+.ar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ---------- QR印刷 ---------- */
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.qr-card {
+  background: #fff;
+  border: 1.5px dashed #9db1af;
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  break-inside: avoid;
+}
+
+.qr-card h3 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.qr-place {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.qr-card img {
+  width: 100%;
+  max-width: 200px;
+}
+
+.qr-caption {
+  margin: 6px 0 0;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.qr-id {
+  margin: 4px 0 0;
+  font-size: 8.5px;
+  color: #b0bcba;
+  word-break: break-all;
+}
+
+.qr-loading {
+  padding: 40px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ---------- 印刷 ---------- */
+@media print {
+  .no-print,
+  .app-header {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .app-main {
+    padding: 0;
+  }
+
+  .qr-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
