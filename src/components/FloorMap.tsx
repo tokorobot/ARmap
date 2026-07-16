@@ -1,8 +1,10 @@
 // ============================================================
 // フロア地図（模式図）: 棟・部屋・階段・渡り廊下と経路を描画
+// graph を渡すとそのグラフを描く（配置エディタのプレビュー用）。
+// 省略時はアプリ全体で使っているアクティブなグラフを描く。
 // ============================================================
 
-import { MAP_BRIDGES, MAP_BUILDINGS, NODES, type NavNode } from "../data/graph";
+import { ACTIVE_GRAPH, type GraphData, type NavNode } from "../data/graph";
 
 interface Props {
   floor: number;
@@ -12,14 +14,15 @@ interface Props {
   highlightIds: string[];
   currentId?: string;
   goalId?: string;
+  graph?: GraphData;
 }
 
 /** ノードID列から、指定フロア上の連続区間を取り出す */
-function runsOnFloor(ids: string[], floor: number): NavNode[][] {
+function runsOnFloor(g: GraphData, ids: string[], floor: number): NavNode[][] {
   const runs: NavNode[][] = [];
   let cur: NavNode[] = [];
   for (const id of ids) {
-    const n = NODES.get(id);
+    const n = g.nodes.get(id);
     if (n && n.floor === floor) {
       cur.push(n);
     } else {
@@ -31,8 +34,9 @@ function runsOnFloor(ids: string[], floor: number): NavNode[][] {
   return runs;
 }
 
-export default function FloorMap({ floor, pathIds, highlightIds, currentId, goalId }: Props) {
-  const buildings = MAP_BUILDINGS.filter((b) => b.floors.includes(floor));
+export default function FloorMap({ floor, pathIds, highlightIds, currentId, goalId, graph }: Props) {
+  const g = graph ?? ACTIVE_GRAPH;
+  const buildings = g.mapBuildings.filter((b) => b.floors.includes(floor));
   if (buildings.length === 0) return null;
 
   const minX = Math.min(...buildings.map((b) => b.x)) - 52;
@@ -40,13 +44,13 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
   const minY = Math.min(...buildings.map((b) => b.yTop)) - 34;
   const maxY = Math.max(...buildings.map((b) => b.yBottom)) + 24;
 
-  const floorNodes = [...NODES.values()].filter(
+  const floorNodes = [...g.nodes.values()].filter(
     (n) => n.floor === floor && buildings.some((b) => b.id === n.buildingId)
   );
-  const pathRuns = runsOnFloor(pathIds, floor);
-  const hlRuns = runsOnFloor(highlightIds, floor);
-  const currentNode = currentId ? NODES.get(currentId) : undefined;
-  const goalNode = goalId ? NODES.get(goalId) : undefined;
+  const pathRuns = runsOnFloor(g, pathIds, floor);
+  const hlRuns = runsOnFloor(g, highlightIds, floor);
+  const currentNode = currentId ? g.nodes.get(currentId) : undefined;
+  const goalNode = goalId ? g.nodes.get(goalId) : undefined;
 
   return (
     <svg
@@ -61,15 +65,28 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
         </marker>
       </defs>
 
-      {/* 渡り廊下 */}
-      {MAP_BRIDGES.filter((br) => br.floors.includes(floor)).map((br, i) => (
-        <g key={`br-${i}`}>
-          <line x1={br.x1} y1={br.y} x2={br.x2} y2={br.y} stroke="#b9c6c6" strokeWidth={8} strokeLinecap="round" />
-          <text x={(br.x1 + br.x2) / 2} y={br.y - 8} textAnchor="middle" fontSize={7} fill="#7c8a8a">
-            渡り廊下
+      {/* 方位記号（実際の北の向き。模式図は回転して描かれているため） */}
+      <g transform={`translate(${maxX - 18}, ${minY + 20})`}>
+        <circle r={13} fill="#ffffff" stroke="#c3d0d0" />
+        <g transform={`rotate(${-g.rotationDeg})`}>
+          <path d="M0 -9 L4 4 L0 1 L-4 4 Z" fill="#c25454" />
+          <text y={-11} textAnchor="middle" fontSize={7} fontWeight={700} fill="#c25454">
+            N
           </text>
         </g>
-      ))}
+      </g>
+
+      {/* 渡り廊下 */}
+      {g.mapBridges
+        .filter((br) => br.floors.includes(floor))
+        .map((br, i) => (
+          <g key={`br-${i}`}>
+            <line x1={br.x1} y1={br.y} x2={br.x2} y2={br.y} stroke="#b9c6c6" strokeWidth={8} strokeLinecap="round" />
+            <text x={(br.x1 + br.x2) / 2} y={br.y - 8} textAnchor="middle" fontSize={7} fill="#7c8a8a">
+              渡り廊下
+            </text>
+          </g>
+        ))}
 
       {/* 棟 */}
       {buildings.map((b) => (
@@ -89,7 +106,7 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
         </g>
       ))}
 
-      {/* 廊下（西側の帯） */}
+      {/* 廊下（帯） */}
       {buildings.map((b) => (
         <line
           key={`co-${b.id}`}
@@ -103,7 +120,7 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
         />
       ))}
 
-      {/* 部屋（廊下の東側に並ぶ） */}
+      {/* 部屋（廊下の図右側に並ぶ） */}
       {floorNodes
         .filter((n) => n.kind === "room")
         .map((n) => {
@@ -126,7 +143,7 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
           );
         })}
 
-      {/* 階段（廊下＝西側） */}
+      {/* 階段（廊下＝図左側） */}
       {floorNodes
         .filter((n) => n.kind === "stair")
         .map((n) => (

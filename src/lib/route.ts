@@ -2,7 +2,7 @@
 // 経路探索とターンバイターン案内文の生成
 // ============================================================
 
-import { ADJ, NODES, type NavNode } from "../data/graph";
+import { ADJ, NODES, ROTATION_DEG, type NavNode } from "../data/graph";
 
 /** ダイクストラ法で最短経路を求める（ノードID列を返す。到達不能ならnull） */
 export function findPath(from: string, to: string): string[] | null {
@@ -44,11 +44,11 @@ export function findPath(from: string, to: string): string[] | null {
   return path;
 }
 
-/** ノードaからbへの方位角（北=0°・東=90°・時計回り） */
+/** ノードaからbへの実方位角（北=0°・東=90°・時計回り）
+ *  模式図上の角度に方位補正（rotationDeg）を足して実世界の方位に変換する */
 export function bearing(a: NavNode, b: NavNode): number {
-  // 座標系はyが南向きプラスなので反転して計算
   const deg = (Math.atan2(b.x - a.x, -(b.y - a.y)) * 180) / Math.PI;
-  return (deg + 360) % 360;
+  return (deg + ROTATION_DEG + 360) % 360;
 }
 
 export type StepKind = "start" | "walk" | "bridge" | "stair" | "arrive";
@@ -149,12 +149,12 @@ export function buildSteps(pathIds: string[]): GuideStep[] {
     }
   });
 
-  // 到着（教室は廊下の東側にあるので、南北の進行方向から右手/左手が決まる）
+  // 到着（教室は廊下の図右側にあるので、廊下の進行方向から右手/左手が決まる）
   let arriveDetail = "案内は以上です";
   if (path.length >= 2) {
     const prev = path[path.length - 2];
-    if (prev.y > goal.y) arriveDetail = "進行方向の右手にあります"; // 北向きに歩いてきた
-    else if (prev.y < goal.y) arriveDetail = "進行方向の左手にあります"; // 南向きに歩いてきた
+    if (prev.y > goal.y) arriveDetail = "進行方向の右手にあります"; // 図の上向きに歩いてきた
+    else if (prev.y < goal.y) arriveDetail = "進行方向の左手にあります"; // 図の下向きに歩いてきた
   }
   steps.push({
     kind: "arrive",

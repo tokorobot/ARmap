@@ -7,12 +7,13 @@
 //   #/print       QR印刷ページ（管理用）
 // ============================================================
 
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { NODES, type NavNode } from "./data/graph";
 import HomeView from "./components/HomeView";
 import ARView from "./components/ARView";
 import GuideView from "./components/GuideView";
 import QrPrintView from "./components/QrPrintView";
+import EditorView from "./components/EditorView";
 import DestinationList from "./components/DestinationList";
 
 type Route =
@@ -20,7 +21,8 @@ type Route =
   | { view: "scan" }
   | { view: "qr"; id: string }
   | { view: "guide"; from: string; to: string }
-  | { view: "print" };
+  | { view: "print" }
+  | { view: "edit" };
 
 function parseHash(hash: string): Route {
   const parts = hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
@@ -35,6 +37,8 @@ function parseHash(hash: string): Route {
         : { view: "home" };
     case "print":
       return { view: "print" };
+    case "edit":
+      return { view: "edit" };
     default:
       return { view: "home" };
   }
@@ -50,6 +54,8 @@ const KEY_PENDING = "nav.pendingDest";
 
 export default function App() {
   const [route, setRoute] = useState<Route>(() => parseHash(location.hash));
+  // sessionStorage（現在地・目的地）を変更したときに再描画させるため
+  const [, force] = useReducer((x: number) => x + 1, 0);
 
   useEffect(() => {
     const onHash = () => setRoute(parseHash(location.hash));
@@ -88,6 +94,18 @@ export default function App() {
     go(`#/guide/${encodeURIComponent(newFromId)}/${encodeURIComponent(destId)}`);
   };
 
+  // 選択中の目的地を解除
+  const clearPending = () => {
+    sessionStorage.removeItem(KEY_PENDING);
+    force();
+  };
+
+  // 現在地をクリア
+  const clearCurrent = () => {
+    sessionStorage.removeItem(KEY_CURRENT);
+    force();
+  };
+
   let body: React.ReactNode;
   switch (route.view) {
     case "scan": {
@@ -100,9 +118,14 @@ export default function App() {
         >
           <div className="ar-card">
             {pending && NODES.has(pending) && (
-              <p className="step-detail">
-                目的地「{NODES.get(pending)!.label}」を選択中。QRを読むと案内を開始します
-              </p>
+              <div className="pending-row">
+                <p className="step-detail">
+                  目的地「{NODES.get(pending)!.label}」を選択中。QRを読むと案内を開始します
+                </p>
+                <button className="clear-btn" onClick={clearPending}>
+                  解除
+                </button>
+              </div>
             )}
             <p className="step-text">教室や階段のQRコードにかざしてください</p>
           </div>
@@ -149,12 +172,18 @@ export default function App() {
     case "print":
       body = <QrPrintView />;
       break;
+    case "edit":
+      body = <EditorView />;
+      break;
     default:
       body = (
         <HomeView
           currentId={currentId}
+          pendingId={sessionStorage.getItem(KEY_PENDING)}
           onScan={() => go("#/scan")}
           onSelectDest={selectDest}
+          onClearPending={clearPending}
+          onClearCurrent={clearCurrent}
           onDemoStart={() => {
             sessionStorage.setItem(KEY_CURRENT, "b1-1f-事務室");
             go("#/qr/" + encodeURIComponent("b1-1f-事務室"));

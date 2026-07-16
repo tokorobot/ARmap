@@ -95,9 +95,14 @@ export default function GuideView({ fromId, toId, onRelocate, onFinish }: Props)
             <span className="step-no">
               STEP {index + 1} / {steps.length}　→ {goal?.label}
             </span>
-            <button className="ar-map-btn" onClick={() => setMode("map")}>
-              🗺 地図
-            </button>
+            <span className="ar-head-btns">
+              <button className="ar-map-btn" onClick={() => setMode("map")}>
+                🗺 地図
+              </button>
+              <button className="ar-map-btn" onClick={onFinish}>
+                ✕ 中止
+              </button>
+            </span>
           </div>
           <p className="step-text">
             {STEP_ICONS[step.kind]} {step.text}
@@ -145,6 +150,9 @@ export default function GuideView({ fromId, toId, onRelocate, onFinish }: Props)
 
       <button className="btn btn-ghost btn-sm rescan" onClick={() => setMode("ar")}>
         📷 ARカメラモードに戻る
+      </button>
+      <button className="btn btn-ghost btn-sm rescan" onClick={onFinish}>
+        ✕ 案内を中止する
       </button>
     </div>
   );
