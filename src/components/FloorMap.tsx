@@ -89,7 +89,21 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
         </g>
       ))}
 
-      {/* 部屋 */}
+      {/* 廊下（西側の帯） */}
+      {buildings.map((b) => (
+        <line
+          key={`co-${b.id}`}
+          x1={b.x}
+          y1={b.yTop - 4}
+          x2={b.x}
+          y2={b.yBottom + 8}
+          stroke="#e8efee"
+          strokeWidth={10}
+          strokeLinecap="round"
+        />
+      ))}
+
+      {/* 部屋（廊下の東側に並ぶ） */}
       {floorNodes
         .filter((n) => n.kind === "room")
         .map((n) => {
@@ -97,7 +111,7 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
           return (
             <g key={n.id}>
               <rect
-                x={n.x - 38}
+                x={n.x + 8}
                 y={n.y - 8}
                 width={30}
                 height={16}
@@ -105,20 +119,20 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
                 fill={isGoal ? "#fde68a" : "#eef4f4"}
                 stroke={isGoal ? "#d97706" : "#d0dcdc"}
               />
-              <text x={n.x - 23} y={n.y + 2.5} textAnchor="middle" fontSize={6.5} fill="#3f4f4f">
+              <text x={n.x + 23} y={n.y + 2.5} textAnchor="middle" fontSize={6.5} fill="#3f4f4f">
                 {n.label}
               </text>
             </g>
           );
         })}
 
-      {/* 階段 */}
+      {/* 階段（廊下＝西側） */}
       {floorNodes
         .filter((n) => n.kind === "stair")
         .map((n) => (
           <g key={n.id}>
-            <rect x={n.x + 8} y={n.y - 7} width={26} height={14} rx={3} fill="#f5f0df" stroke="#cfc49a" />
-            <text x={n.x + 21} y={n.y + 2.5} textAnchor="middle" fontSize={6.5} fill="#7a6f45">
+            <rect x={n.x - 34} y={n.y - 7} width={26} height={14} rx={3} fill="#f5f0df" stroke="#cfc49a" />
+            <text x={n.x - 21} y={n.y + 2.5} textAnchor="middle" fontSize={6.5} fill="#7a6f45">
               階段
             </text>
           </g>
@@ -129,8 +143,8 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
         .filter((n) => n.qr)
         .map((n) => (
           <g key={`qr-${n.id}`}>
-            <rect x={n.x + 8} y={n.y - 20} width={16} height={11} rx={2} fill="#0d7a72" />
-            <text x={n.x + 16} y={n.y - 12} textAnchor="middle" fontSize={6} fill="#ffffff" fontWeight={700}>
+            <rect x={n.x - 24} y={n.y - 20} width={16} height={11} rx={2} fill="#0d7a72" />
+            <text x={n.x - 16} y={n.y - 12} textAnchor="middle" fontSize={6} fill="#ffffff" fontWeight={700}>
               QR
             </text>
           </g>

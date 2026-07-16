@@ -5,9 +5,11 @@
 // 座標系: x = 東がプラス, y = 南がプラス（SVGと同じ・北が画面上）
 // 方位角: 北=0°, 東=90°, 南=180°, 西=270°
 //
-// ※図面から読み取れない部分は仮定を置いている（現地確認で要修正）:
+// 確認済みの配置（2026-07-16 ユーザー確認）:
+//   - 教室は各棟の東側、廊下は西側
+//   - 渡り廊下は各棟の南端で接続
+// ※まだ仮定のまま（現地確認で要修正）:
 //   - 各棟の部屋の並び順（北→南と仮定）
-//   - 渡り廊下の位置（各棟の北端で接続と仮定）
 //   - 1号館の階段位置（WCと事務室の間 → 廊下中央付近と仮定）
 //   - QRの facing（QRを正面に見たときにユーザーが向く方位。現地で実測）
 // 修正はこのファイルの BUILDINGS / BRIDGES / QR_OVERRIDES だけ直せばよい。
@@ -175,17 +177,17 @@ for (const b of BUILDINGS) {
       });
     }
 
-    // 渡り廊下の接続ノード（棟の北端）
+    // 渡り廊下の接続ノード（棟の南端）
     const hasBridge = BRIDGES.some(
       (br) => (br.west === b.id || br.east === b.id) && br.floors.includes(f)
     );
     if (hasBridge) {
       floorNodes.push({
         id: `${b.id}-${f}f-jn`,
-        label: `${b.name}${f}F 北側廊下`,
+        label: `${b.name}${f}F 南側廊下`,
         ...base,
         x: b.x,
-        y: b.yTop,
+        y: b.yBottom,
         kind: "junction",
         isDestination: false,
       });
@@ -314,9 +316,9 @@ export const MAP_BUILDINGS = BUILDINGS.map((b) => ({
   floors: Object.keys(b.roomsByFloor).map(Number),
 }));
 
-/** 地図描画用の渡り廊下情報 */
+/** 地図描画用の渡り廊下情報（南端で接続） */
 export const MAP_BRIDGES = BRIDGES.map((br) => {
   const w = BUILDINGS.find((b) => b.id === br.west)!;
   const e = BUILDINGS.find((b) => b.id === br.east)!;
-  return { x1: w.x, x2: e.x, y: w.yTop, floors: br.floors };
+  return { x1: w.x, x2: e.x, y: w.yBottom, floors: br.floors };
 });

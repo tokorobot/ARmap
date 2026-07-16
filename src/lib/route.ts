@@ -149,11 +149,17 @@ export function buildSteps(pathIds: string[]): GuideStep[] {
     }
   });
 
-  // 到着
+  // 到着（教室は廊下の東側にあるので、南北の進行方向から右手/左手が決まる）
+  let arriveDetail = "案内は以上です";
+  if (path.length >= 2) {
+    const prev = path[path.length - 2];
+    if (prev.y > goal.y) arriveDetail = "進行方向の右手にあります"; // 北向きに歩いてきた
+    else if (prev.y < goal.y) arriveDetail = "進行方向の左手にあります"; // 南向きに歩いてきた
+  }
   steps.push({
     kind: "arrive",
     text: `「${goal.label}」に到着`,
-    detail: "案内は以上です",
+    detail: arriveDetail,
     floor: goal.floor,
     pathIds: [goal.id],
   });
