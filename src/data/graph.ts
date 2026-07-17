@@ -52,6 +52,8 @@ export interface BuildingDef {
   yTop: number;
   yBottom: number;
   stairs: StairPos[];
+  /** 階段のY座標の上書き（1号館の「事務室脇の階段」のように端でない場合） */
+  stairYs?: Record<string, number>;
   roomsByFloor: Record<string, string[]>; // 階番号 → 図の上→下の順の部屋名
 }
 
@@ -60,6 +62,9 @@ export interface BridgeDef {
   east: string; // 図の右側の棟ID
   floors: number[];
   at: BridgeAt; // 接続位置（north=図の上端 / south=図の下端）
+  /** 接続点のY座標の上書き（棟の途中に接続する場合。1号館の事務室脇など） */
+  westY?: number;
+  eastY?: number;
 }
 
 export interface QrPointDef {
@@ -69,6 +74,8 @@ export interface QrPointDef {
 }
 
 export interface LayoutConfig {
+  /** データ構造の版。既定値と版が違うlocalStorageの上書きは無視される */
+  version?: number;
   rotationDeg: number;
   buildings: BuildingDef[];
   bridges: BridgeDef[];
@@ -83,7 +90,7 @@ export interface GraphData {
   destinations: NavNode[];
   qrNodes: NavNode[];
   mapBuildings: { id: string; name: string; x: number; yTop: number; yBottom: number; floors: number[] }[];
-  mapBridges: { x1: number; x2: number; y: number; floors: number[] }[];
+  mapBridges: { x1: number; y1: number; x2: number; y2: number; floors: number[] }[];
   rotationDeg: number;
 }
 
@@ -96,7 +103,14 @@ export function loadLayout(): LayoutConfig {
     const raw = localStorage.getItem(LAYOUT_LS_KEY);
     if (raw) {
       const cfg = JSON.parse(raw) as LayoutConfig;
-      if (cfg && Array.isArray(cfg.buildings) && Array.isArray(cfg.bridges)) return cfg;
+      if (
+        cfg &&
+        Array.isArray(cfg.buildings) &&
+        Array.isArray(cfg.bridges) &&
+        cfg.version === DEFAULT_LAYOUT.version // 版が変わったら古い上書きは捨てる
+      ) {
+        return cfg;
+      }
     }
   } catch {
     // 壊れたデータは無視して既定値へ
@@ -107,9 +121,17 @@ export function loadLayout(): LayoutConfig {
 const posLabelMap: Record<StairPos, string> = { north: "上", center: "中央", south: "下" };
 
 function stairY(b: BuildingDef, pos: StairPos): number {
+  if (b.stairYs && b.stairYs[pos] != null) return b.stairYs[pos];
   if (pos === "north") return b.yTop + 18;
   if (pos === "south") return b.yBottom - 12;
   return (b.yTop + b.yBottom) / 2;
+}
+
+/** 渡り廊下の接続点のY座標（棟の端が既定。上書きがあればそちら） */
+function bridgeEndY(br: BridgeDef, b: BuildingDef, side: "west" | "east"): number {
+  const override = side === "west" ? br.westY : br.eastY;
+  if (override != null) return override;
+  return br.at === "south" ? b.yBottom : b.yTop;
 }
 
 /** 踊り場QRのfacing初期値（模式図の向き＋方位補正。実測までの仮値） */
@@ -169,18 +191,24 @@ export function buildGraph(cfg: LayoutConfig): GraphData {
         });
       }
 
-      // 渡り廊下の接続ノード（接続位置ごとに1つ）
-      const ats = new Set<BridgeAt>();
+      // 渡り廊下の接続ノード（接続位置ごとに1つ。上書き座標を優先）
+      const jnYs = new Map<BridgeAt, { y: number; custom: boolean }>();
       for (const br of cfg.bridges) {
-        if ((br.west === b.id || br.east === b.id) && br.floors.includes(f)) ats.add(br.at);
+        if (!br.floors.includes(f)) continue;
+        const side = br.west === b.id ? "west" : br.east === b.id ? "east" : null;
+        if (!side) continue;
+        const custom = (side === "west" ? br.westY : br.eastY) != null;
+        const y = bridgeEndY(br, b, side);
+        const prev = jnYs.get(br.at);
+        if (!prev || (custom && !prev.custom)) jnYs.set(br.at, { y, custom });
       }
-      for (const at of ats) {
+      for (const [at, { y }] of jnYs) {
         floorNodes.push({
           id: `${b.id}-${f}f-jn-${at}`,
-          label: `${b.name}${f}F ${at === "south" ? "下" : "上"}側廊下`,
+          label: `${b.name}${f}F 廊下`,
           ...base,
           x: b.x,
-          y: at === "south" ? b.yBottom : b.yTop,
+          y,
           kind: "junction",
           isDestination: false,
         });
@@ -209,7 +237,7 @@ export function buildGraph(cfg: LayoutConfig): GraphData {
       const z = `${br.east}-${f}f-jn-${br.at}`;
       const na = nodes.get(a);
       const nz = nodes.get(z);
-      if (na && nz) addEdge(a, z, "bridge", Math.abs(nz.x - na.x));
+      if (na && nz) addEdge(a, z, "bridge", Math.hypot(nz.x - na.x, nz.y - na.y));
     }
   }
 
@@ -246,7 +274,13 @@ export function buildGraph(cfg: LayoutConfig): GraphData {
     mapBridges: cfg.bridges.map((br) => {
       const w = cfg.buildings.find((b) => b.id === br.west)!;
       const e = cfg.buildings.find((b) => b.id === br.east)!;
-      return { x1: w.x, x2: e.x, y: br.at === "south" ? w.yBottom : w.yTop, floors: br.floors };
+      return {
+        x1: w.x,
+        y1: bridgeEndY(br, w, "west"),
+        x2: e.x,
+        y2: bridgeEndY(br, e, "east"),
+        floors: br.floors,
+      };
     }),
     rotationDeg: cfg.rotationDeg,
   };
@@ -287,6 +321,8 @@ const ROOM_INFO: Record<string, string> = {
   美術室: "美術の授業で使う教室です",
   礼法室: "礼法・作法の授業で使う和室です",
   生徒会室: "生徒会の活動場所です",
+  理科職員室: "理科の先生方の部屋です",
+  生徒指導職員室: "生徒指導の先生方の部屋です",
 };
 
 /** ARラベルに表示する説明文 */

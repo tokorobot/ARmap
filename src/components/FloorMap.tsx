@@ -81,8 +81,14 @@ export default function FloorMap({ floor, pathIds, highlightIds, currentId, goal
         .filter((br) => br.floors.includes(floor))
         .map((br, i) => (
           <g key={`br-${i}`}>
-            <line x1={br.x1} y1={br.y} x2={br.x2} y2={br.y} stroke="#b9c6c6" strokeWidth={8} strokeLinecap="round" />
-            <text x={(br.x1 + br.x2) / 2} y={br.y - 8} textAnchor="middle" fontSize={7} fill="#7c8a8a">
+            <line x1={br.x1} y1={br.y1} x2={br.x2} y2={br.y2} stroke="#b9c6c6" strokeWidth={8} strokeLinecap="round" />
+            <text
+              x={(br.x1 + br.x2) / 2}
+              y={(br.y1 + br.y2) / 2 - 8}
+              textAnchor="middle"
+              fontSize={7}
+              fill="#7c8a8a"
+            >
               渡り廊下
             </text>
           </g>
