@@ -487,7 +487,7 @@ function turnInstruction(prev: number, next: number): string {
 ### 9.2 URL形式
 
 ```
-https://<公開ドメイン>/#/at/n001
+https://nobeko-map.pages.dev/#/at/n001
 ```
 
 **このURLは後から変えられない**（印刷して掲示するため）。
@@ -526,13 +526,13 @@ A4に2枚。ラミネート推奨。
 ### 10.2 セットアップ
 
 ```
-1. GitHub にリポジトリを push
+1. GitHub にリポジトリを push（tokorobot/ARmap の main ブランチ）
 2. Cloudflare -> Workers & Pages -> Create -> Pages -> Connect to Git
 3. ビルド設定:
      Framework preset : Vite
      Build command    : npm run build
      Build output dir : dist
-4. https://<project>.pages.dev で公開
+4. https://nobeko-map.pages.dev で公開
 ```
 
 `vite.config.ts` の `base` は `"/"`（Pages はルート配信）。
