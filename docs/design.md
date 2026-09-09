@@ -526,7 +526,7 @@ A4に2枚。ラミネート推奨。
 ### 10.2 セットアップ
 
 ```
-1. GitHub にリポジトリを push（tokorobot/ARmap の main ブランチ）
+1. GitHub にリポジトリを push（junpei-dev/ARmap の main ブランチ）
 2. Cloudflare -> Workers & Pages -> Create -> Pages -> Connect to Git
 3. ビルド設定:
      Framework preset : Vite

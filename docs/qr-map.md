@@ -12,7 +12,7 @@ https://nobeko-map.pages.dev/
 
 - 確定日: 2026-09-09
 - ホスティング: Cloudflare Pages（GitHub連携・`main` ブランチを自動ビルド）
-- リポジトリ: https://github.com/tokorobot/ARmap
+- リポジトリ: https://github.com/junpei-dev/ARmap （旧 tokorobot/ARmap から移動）
 
 > **警告**: QRコードにはこのアドレスが焼き込まれます。
 > 掲示後にドメインを変更すると、掲示済みのQRがすべて使えなくなり、貼り替えが必要になります。
