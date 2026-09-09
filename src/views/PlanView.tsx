@@ -118,6 +118,7 @@ export default function PlanView() {
 
       <div className="foot-links">
         <a href="#/">ホームへ戻る</a>
+        <a href="#/qr">掲示用QRコード</a>
       </div>
     </>
   );

@@ -81,7 +81,8 @@ export default function ArrowOverlay({
       <p className="ar-arrow-label">
         {base === null ? (
           <>
-            <strong>{compassLabel(bearing)}</strong> の方向へ
+            <strong>{compassLabel(bearing)}</strong>
+            {"の方向へ"}
           </>
         ) : matched ? (
           <strong>この方向へ進んでください</strong>

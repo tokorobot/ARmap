@@ -16,13 +16,15 @@ import HomeView from "./views/HomeView";
 import ScanView from "./views/ScanView";
 import GuideView from "./views/GuideView";
 import PlanView from "./views/PlanView";
+import QrPrintView from "./views/QrPrintView";
 
 type Route =
   | { view: "home" }
   | { view: "scan" }
   | { view: "at"; id: string }
   | { view: "go"; from: string; to: string }
-  | { view: "plan" };
+  | { view: "plan" }
+  | { view: "qr" };
 
 const KEY_CURRENT = "arnav.current";
 const KEY_PENDING = "arnav.pendingDest";
@@ -43,6 +45,8 @@ function parseHash(hash: string): Route {
         : { view: "home" };
     case "plan":
       return { view: "plan" };
+    case "qr":
+      return { view: "qr" };
     default:
       return { view: "home" };
   }
@@ -162,6 +166,10 @@ export default function App() {
 
     case "plan":
       body = <PlanView />;
+      break;
+
+    case "qr":
+      body = <QrPrintView />;
       break;
 
     default:

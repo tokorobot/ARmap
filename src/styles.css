@@ -480,3 +480,99 @@ body {
   padding: 8px 10px;
   line-height: 1.6;
 }
+
+/* ============================================================
+   掲示用QRコード（印刷）
+   ============================================================ */
+
+.qr-sheet {
+  display: grid;
+  gap: 16px;
+}
+
+.qr-card {
+  background: #fff;
+  border: 2px solid #0f172a;
+  border-radius: 8px;
+  padding: 18px 16px;
+  text-align: center;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.qr-school {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.qr-title {
+  margin: 2px 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.qr-img {
+  display: block;
+  width: 82mm;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.qr-img-empty {
+  height: 82mm;
+  display: grid;
+  place-items: center;
+  color: var(--text-sub);
+  font-size: 13px;
+  border: 1px dashed var(--border);
+}
+
+.qr-lead {
+  margin: 12px 0 0;
+  font-size: 14px;
+}
+
+.qr-place {
+  margin: 10px 0 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.qr-id {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+
+  .app-header,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-main {
+    padding: 0;
+    max-width: none;
+  }
+
+  .qr-sheet {
+    gap: 0;
+  }
+
+  .qr-card {
+    height: 138mm; /* A4縦に2枚 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 0;
+    margin: 0;
+  }
+}
