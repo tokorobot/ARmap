@@ -2,6 +2,5 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./styles.css";
 
-// StrictMode は使わない。
-// カメラの初期化が二重に走り、getUserMedia が競合するため（前プロジェクトでの教訓）。
+// StrictMode はカメラ初期化の二重実行を避けるため使用しない（前作と同方針）
 createRoot(document.getElementById("root")!).render(<App />);

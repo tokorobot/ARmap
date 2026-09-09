@@ -1,0 +1,214 @@
+{
+  "version": 2,
+  "meta": {
+    "school": "延岡工業高等学校",
+    "planUpBearing": 315,
+    "source": "29_R7延岡工業_図面.pdf（令和7年度 学校施設台帳）ページ3／整理番号536-3",
+    "updatedAt": "2026-09-09"
+  },
+  "buildings": [
+    {
+      "id": "b1",
+      "name": "管理・教室棟",
+      "planCode": "①",
+      "planPage": 3,
+      "floors": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n001",
+      "label": "事務室前",
+      "kind": "room",
+      "building": "b1",
+      "floor": 1,
+      "x": 8.4,
+      "y": 36.1,
+      "source": "plan",
+      "qr": {
+        "place": "事務室窓口の前（掲示位置は現地で決定）",
+        "facing": null
+      },
+      "entranceBearing": 225
+    },
+    {
+      "id": "n002",
+      "label": "校長室前",
+      "kind": "room",
+      "building": "b1",
+      "floor": 1,
+      "x": 8.4,
+      "y": 45.1,
+      "source": "plan",
+      "entranceBearing": 225
+    },
+    {
+      "id": "n003",
+      "label": "職員室前",
+      "kind": "room",
+      "building": "b1",
+      "floor": 1,
+      "x": 8.4,
+      "y": 58.6,
+      "source": "plan",
+      "qr": {
+        "place": "職員室入口の脇（掲示位置は現地で決定）",
+        "facing": null
+      },
+      "entranceBearing": 225
+    },
+    {
+      "id": "n004",
+      "label": "棟の接続部",
+      "kind": "corner",
+      "building": "b1",
+      "floor": 1,
+      "x": 8.4,
+      "y": 29.6,
+      "source": "plan"
+    },
+    {
+      "id": "n005",
+      "label": "便所前",
+      "kind": "corner",
+      "building": "b1",
+      "floor": 1,
+      "x": 8.4,
+      "y": 25.35,
+      "source": "plan"
+    },
+    {
+      "id": "n006",
+      "label": "保健室前",
+      "kind": "room",
+      "building": "b1",
+      "floor": 1,
+      "x": 8.4,
+      "y": 18.6,
+      "source": "plan",
+      "qr": {
+        "place": "保健室入口の脇（掲示位置は現地で決定）",
+        "facing": null
+      },
+      "entranceBearing": 225
+    },
+    {
+      "id": "n007",
+      "label": "印刷室前",
+      "kind": "corner",
+      "building": "b1",
+      "floor": 1,
+      "x": 8.4,
+      "y": 11.85,
+      "source": "plan"
+    },
+    {
+      "id": "n008",
+      "label": "進路指導室前",
+      "kind": "room",
+      "building": "b1",
+      "floor": 1,
+      "x": 8.4,
+      "y": 4.8,
+      "source": "plan",
+      "entranceBearing": 225
+    },
+    {
+      "id": "n009",
+      "label": "階段（接続部）",
+      "kind": "stair",
+      "building": "b1",
+      "floor": 1,
+      "x": 3.6,
+      "y": 29.6,
+      "source": "plan"
+    },
+    {
+      "id": "n010",
+      "label": "階段（ホール脇）",
+      "kind": "stair",
+      "building": "b1",
+      "floor": 1,
+      "x": 11.5,
+      "y": 25.35,
+      "source": "plan"
+    }
+  ],
+  "edges": [
+    {
+      "from": "n008",
+      "to": "n007",
+      "kind": "corridor"
+    },
+    {
+      "from": "n007",
+      "to": "n006",
+      "kind": "corridor"
+    },
+    {
+      "from": "n006",
+      "to": "n005",
+      "kind": "corridor"
+    },
+    {
+      "from": "n005",
+      "to": "n004",
+      "kind": "corridor"
+    },
+    {
+      "from": "n004",
+      "to": "n001",
+      "kind": "corridor"
+    },
+    {
+      "from": "n001",
+      "to": "n002",
+      "kind": "corridor"
+    },
+    {
+      "from": "n002",
+      "to": "n003",
+      "kind": "corridor"
+    },
+    {
+      "from": "n004",
+      "to": "n009",
+      "kind": "door"
+    },
+    {
+      "from": "n005",
+      "to": "n010",
+      "kind": "door"
+    }
+  ],
+  "destinations": [
+    {
+      "nodeId": "n003",
+      "displayName": "職員室",
+      "category": "事務",
+      "order": 1
+    },
+    {
+      "nodeId": "n006",
+      "displayName": "保健室",
+      "category": "事務",
+      "order": 2
+    },
+    {
+      "nodeId": "n002",
+      "displayName": "校長室",
+      "category": "事務",
+      "order": 3
+    },
+    {
+      "nodeId": "n008",
+      "displayName": "進路指導室",
+      "category": "事務",
+      "order": 4
+    }
+  ]
+}

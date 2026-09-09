@@ -2,10 +2,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 
-// Cloudflare Pages はルート配信なので base は "/" のままでよい。
-// スマホ実機テストは `npm run dev:https`（カメラ・方位センサーは HTTPS 必須）。
+// スマホ実機テスト時は `npm run dev:https` を使う
+// （カメラ・方位センサーは HTTPS でないと動かないため）
 export default defineConfig(({ mode }) => ({
-  base: "/",
+  base: "./", // GitHub Pages 配下でも動くように相対パス
   plugins: [react(), ...(mode === "https" ? [basicSsl()] : [])],
   server: { host: true },
 }));
